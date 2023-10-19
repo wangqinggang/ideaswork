@@ -1,0 +1,389 @@
+<template>
+    <el-card class="h-full p-2">
+        <div class="pb-4 mb-5 border-b-2 border-slate-100">
+            <el-page-header content="仪表盘" @back="goBack" />
+        </div>
+        <div class="">
+            <el-form :inline="true" :model="UserDTO" class="px-3 mt-8">
+                <el-form-item label="用户名">
+                    <el-input v-model="UserDTO.name" placeholder="用户名" />
+                </el-form-item>
+                <el-form-item label="地址">
+                    <el-input v-model="UserDTO.address" placeholder="用户名" />
+                </el-form-item>
+                <el-form-item>
+                    <el-button
+                            type="primary"
+                            :icon="Search"
+                            @click="handleSearch"
+                            class="bg-slate-500 border-0 hover:bg-slate-700"
+                    >搜索</el-button
+                    >
+                </el-form-item>
+            </el-form>
+            <el-row class="m-0 mb-4 px-3 mt-8">
+                <el-button
+                        type="primary"
+                        size="small"
+                        class="border-0 bg-slate-500 hover:bg-slate-700"
+                        @click="clickAdd"
+                >
+                    新增
+                </el-button>
+                <el-button
+                        size="small"
+                        class="bg-slate-200 hover:bg-slate-600 text-gray-600 hover:text-gray-100"
+                        @click="handleDeleteAll"
+                >
+                    删除选中
+                </el-button>
+            </el-row>
+            <el-table
+                    :data="UserList"
+                    @selection-change="handleSelectionChange"
+                    @sort-change="handleSortChange"
+                    :default-sort="UserSort"
+                    stripe
+                    class="w-full mt-8"
+            >
+                <el-table-column type="selection" />
+                <el-table-column label="主键" align="center">
+                    <template #default="scope">
+                        <span>{{ scope.row.id }}</span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="用户名" align="center">
+                    <template #default="scope">
+                        <span>{{ scope.row.name }}</span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="地址" align="center">
+                    <template #default="scope">
+                        <span>{{ scope.row.address }}</span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        label="出生日期"
+                        sortable="custom"
+                        align="center"
+                        prop="birthday"
+                >
+                    <template #default="scope">
+                        <span>{{ scope.row.birthday }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column fixed="right" label="Operations" width="230">
+                    <template #default="scope">
+                        <el-button
+                                class="bg-slate-300 hover:bg-slate-600 text-gray-600 hover:text-gray-100"
+                                size="small"
+                                :icon="InfoFilled"
+                                @click="handleInfo(scope.$index, scope.row)"
+                        >
+                            详情
+                        </el-button>
+                        <el-button
+                                class="bg-slate-300 hover:bg-slate-600 text-gray-600 hover:text-gray-100"
+                                size="small"
+                                :icon="Edit"
+                                @click="clickEdit(scope.$index, scope.row)"
+                        >
+                            编辑
+                        </el-button>
+                        <el-button
+                                type="text"
+                                :icon="Delete"
+                                class="hover:text-gray-700"
+                                @click="handleDelete(scope.$index, scope.row)"
+                                size="small"
+                        >删除</el-button
+                        >
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="flex justify-end">
+                <el-pagination
+                        class="my-5 text-slate-600 hover:text-slate-900"
+                        v-model:currentPage="Pagination.currentPage"
+                        v-model:page-size="Pagination.pageSize"
+                        :small="Pagination.small"
+                        :disabled="Pagination.disabled"
+                        :background="Pagination.background"
+                        layout=" prev, pager, next"
+                        :total="Pagination.total"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        @prev-click="handlePrevClick"
+                        @next-click="handleNextClick"
+                />
+            </div>
+        </div>
+    </el-card>
+
+    <el-dialog
+            v-model="UserAddVisable"
+            :title="User.id === '' ? '新增用户' : '修改用户'"
+    >
+        <el-form :model="User" ref="UserAddForm" label-width="120px">
+            <el-form-item label="主键" prop="id" hidden="true">
+                <el-input v-model="id" clearable placeholder="请填写主键"></el-input>
+            </el-form-item>
+            <el-form-item label="用户名" prop="name">
+                <el-input
+                        v-model="User.name"
+                        clearable
+                        placeholder="请填写用户名"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="地址" prop="address">
+                <el-input
+                        v-model="User.address"
+                        clearable
+                        placeholder="请填写地址"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="出生日期" prop="birthday">
+                <el-date-picker
+                        v-model="User.birthday"
+                        type="date"
+                        placeholder="请填写出生日期"
+                >
+                </el-date-picker>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="UserAddVisable = false">取消</el-button>
+        <el-button
+                v-if="!User.id"
+                @click="handleAdd"
+                class="bg-slate-500 border-0 hover:bg-slate-700 text-gray-100 hover:text-gray-100"
+        >新增</el-button
+        >
+        <el-button
+                v-if="User.id"
+                @click="handleEdit"
+                class="bg-slate-500 border-0 hover:bg-slate-700 text-gray-100 hover:text-gray-100"
+        >修改</el-button
+        >
+      </span>
+        </template>
+    </el-dialog>
+    <el-dialog v-model="UserInfoVisable" title="用户详情">
+        <el-descriptions :model="User" :column="2" border>
+            <el-descriptions-item label="用户名" label-class-name="" class="">
+                {{ User.name }}
+            </el-descriptions-item>
+            <el-descriptions-item label="时间" label-class-name="" class="">
+                {{ User.birthday }}
+            </el-descriptions-item>
+            <el-descriptions-item label="id" label-class-name="" class="">
+                {{ User.id }}
+            </el-descriptions-item>
+            <el-descriptions-item label="地址" label-class-name="" class="">
+                {{ User.address }}
+            </el-descriptions-item>
+        </el-descriptions>
+    </el-dialog>
+</template>
+<script setup>
+    import { InfoFilled, Delete, Edit, Search } from "@element-plus/icons-vue";
+    import UserService from "@/views/dashboard/UserService";
+</script>
+<script>
+    import { ElMessage, ElMessageBox } from "element-plus";
+    export default {
+        data() {
+            return {
+                UserAddVisable: false,
+                UserEditVisable: false,
+                UserInfoVisable: false,
+                SelectedUsers: [],
+                Pagination: {
+                    currentPage: 1,
+                    pageSize: 3,
+                    total: 189,
+                    disabled: false,
+                    small: false,
+                    background: true,
+                },
+                UserSort: {
+                    prop: null,
+                    order: null, //ascending decending
+                },
+
+                User: {},
+                UserDTO: {
+                    id: "",
+                    birthday: "",
+                    name: "",
+                    address: "",
+                },
+                UserList: [
+                    {
+                        id: "10001",
+                        birthday: "2016-05-03",
+                        name: "Tom",
+                        address: "No. 189, Grove St, Los Angeles",
+                    },
+                    {
+                        id: "10002",
+                        birthday: "2016-05-02",
+                        name: "Tom",
+                        address: "No. 189, Grove St, Los Angeles",
+                    },
+                    {
+                        id: "10003",
+                        birthday: "2016-05-04",
+                        name: "Tom",
+                        address: "No. 189, Grove St, Los Angeles",
+                    },
+                    {
+                        id: "10004",
+                        birthday: "2016-05-01",
+                        name: "Tom",
+                        address: "No. 189, Grove St, Los Angeles",
+                    },
+                ],
+            };
+        },
+        created() {
+            this.handleSearch();
+        },
+        methods: {
+            goBack() {
+                this.$router.push({ name: "Login" });
+            },
+            handleSizeChange() {
+                alert("size Change");
+            },
+            handleCurrentChange() {
+                this.handleSearch();
+            },
+            handlePrevClick() {
+                this.Pagination.currentPage - 1;
+                this.handleSearch();
+            },
+            handleNextClick() {
+                this.Pagination.currentPage + 1;
+                this.handleSearch();
+            },
+            handleSelectionChange(rows) {
+                this.SelectedUsers = rows;
+            },
+            handleSortChange({ column, prop, order }) {
+                // console.log(JSON.stringify(column));
+                // console.log(JSON.stringify(prop));
+                // console.log(JSON.stringify(order));
+                this.UserSort.prop = prop;
+                this.UserSort.order = order;
+                this.handleSearch();
+            },
+            handleInfo(index, row) {
+                this.UserInfoVisable = true;
+                this.User = row;
+                UserService.getUserById(this.User.id).then((res) => {
+                    if (res.status === 200) {
+                        this.User = res.data;
+                    }
+                });
+            },
+            clickAdd() {
+                this.UserAddVisable = true;
+                this.User = {};
+            },
+            handleAdd() {
+                UserService.postUser(this.User).then((res) => {
+                    if (res.status === 200) {
+                        ElMessage({
+                            message: "新增成功",
+                            type: "success",
+                            duration: 2 * 1000,
+                        });
+                        this.UserAddVisable = false;
+                        this.handleSearch();
+                    } else {
+                        ElMessage({
+                            message: "出现错误",
+                            type: "error",
+                            duration: 4 * 1000,
+                        });
+                    }
+                });
+            },
+            clickEdit(index, row) {
+                this.UserAddVisable = true;
+                this.User = row;
+            },
+            handleEdit() {
+                this.UserAddVisable = true;
+                UserService.putUser(this.User.id, this.User).then((res) => {
+                    if (res.status === 200) {
+                        ElMessage({
+                            message: "修改成功",
+                            type: "success",
+                            duration: 2 * 1000,
+                        });
+                        this.UserAddVisable = false;
+                        this.handleSearch();
+                    }
+                });
+            },
+            handleDelete(index, row) {
+                ElMessageBox.confirm("确定删除选中项？", "提示", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning", //
+                })
+                    .then(() => {
+                        UserService.deleteUserById(row.id).then((res) => {
+                            if (res.status === 200) {
+                                this.handleSearch();
+                            }
+                        });
+                    })
+                    .catch(() => {});
+            },
+            handleDeleteAll() {
+                ElMessageBox.confirm("确定删除所有选中项？", "提示", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning",
+                })
+                    .then(() => {
+                        for (let row of this.SelectedUsers) {
+                            UserService.deleteUserById(row.id).then((res) => {
+                                this.handleSearch();
+                            });
+                        }
+                    })
+                    .catch(() => {});
+            },
+
+            handleSearch() {
+                let sort = "";
+                if (!this.UserSort.prop) {
+                    sort = "";
+                } else {
+                    let order = this.UserSort.order === "ascending" ? "ASC" : "DESC";
+                    sort = "sort=" + this.UserSort.prop + "," + order + "&";
+                }
+                // let res = UserService.getUserByCondition(
+                // TODO 此处为排序查询测试
+                let res = UserService.getUserByConditionWithSort(
+                    this.UserDTO,
+                    this.Pagination.currentPage - 1,
+                    this.Pagination.pageSize,
+                    sort
+                ).then((res) => {
+                    this.UserList = res.data.content;
+                    this.Pagination.total = res.data.totalElements;
+                });
+            },
+        },
+    };
+</script>
+<style lang="scss"></style>

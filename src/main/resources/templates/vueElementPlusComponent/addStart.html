@@ -1,0 +1,5 @@
+    <el-dialog
+            v-model="${entityName}AddVisable"
+            :title="${entityName}.id === '' || ${entityName}.id === undefined? '新增 ${entityName}' : '修改 ${entityName}'"
+    >
+      <el-form :model="${entityName}" ref="${entityName}AddForm" label-width="120px">

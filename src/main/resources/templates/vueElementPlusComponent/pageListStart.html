@@ -1,0 +1,7 @@
+        <template>
+        <el-card class="h-full p-2">
+            <div class="pb-4 mb-5 border-b-2 border-slate-100">
+                <el-page-header content="${entityName}" @back="goBack" />
+            </div>
+            <div class="">
+                <el-form :inline="true" :model="${entityName}Condition" class="px-3 mt-8">

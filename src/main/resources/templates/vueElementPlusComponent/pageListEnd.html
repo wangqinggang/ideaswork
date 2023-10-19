@@ -1,0 +1,48 @@
+            <el-table-column fixed="right" label="操作" width="230">
+                <template #default="scope">
+                    <el-button
+                            class="bg-slate-300 hover:bg-slate-600 text-gray-600 hover:text-gray-100"
+                            size="small"
+                            :icon="InfoFilled"
+                            @click="${entityName}Info(scope.$index, scope.row)"
+                    >
+                        详情
+                    </el-button>
+                    <el-button
+                            class="bg-slate-300 hover:bg-slate-600 text-gray-600 hover:text-gray-100"
+                            size="small"
+                            :icon="Edit"
+                            @click="${entityName}ClickEdit(scope.$index, scope.row)"
+                    >
+                        编辑
+                    </el-button>
+                    <el-button
+                            type="text"
+                            :icon="Delete"
+                            class="hover:text-gray-700"
+                            @click="${entityName}Delete(scope.$index, scope.row)"
+                            size="small"
+                    >删除</el-button
+                    >
+                </template>
+            </el-table-column>
+            </el-table>
+            <div class="flex justify-end">
+                <el-pagination
+                        class="my-5 text-slate-600 hover:text-slate-900"
+                        v-show="${entityName}Pagination.total > 0"
+                        v-model:currentPage="${entityName}Pagination.currentPage"
+                        v-model:page-size="${entityName}Pagination.pageSize"
+                        :small="${entityName}Pagination.small"
+                        :disabled="${entityName}Pagination.disabled"
+                        :background="${entityName}Pagination.background"
+                        layout=" prev, pager, next"
+                        :total="${entityName}Pagination.total"
+                        @size-change="${entityName}SizeChange"
+                        @current-change="${entityName}CurrentChange"
+                        @prev-click="${entityName}PrevClick"
+                        @next-click="${entityName}NextClick"
+                />
+            </div>
+            </div>
+            </el-card>

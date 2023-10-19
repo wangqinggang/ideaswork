@@ -1,0 +1,123 @@
+        <el-card class="h-full p-2">
+            <div class="pb-4 mb-5 border-b-2 border-slate-100">
+                <el-page-header content="仪表盘" @back="goBack" />
+            </div>
+            <div class="">
+                <el-form :inline="true" :model="UserDTO" class="px-3 mt-8">
+                    <el-form-item label="用户名">
+                        <el-input v-model="UserDTO.name" placeholder="用户名" />
+                    </el-form-item>
+                    <el-form-item label="地址">
+                        <el-input v-model="UserDTO.address" placeholder="用户名" />
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button
+                                type="primary"
+                                :icon="Search"
+                                @click="handleSearch"
+                                class="bg-slate-500 border-0 hover:bg-slate-700"
+                        >搜索</el-button
+                        >
+                    </el-form-item>
+                </el-form>
+                <el-row class="m-0 mb-4 px-3 mt-8">
+                    <el-button
+                            type="primary"
+                            size="small"
+                            class="border-0 bg-slate-500 hover:bg-slate-700"
+                            @click="clickAdd"
+                    >
+                        新增
+                    </el-button>
+                    <el-button
+                            size="small"
+                            class="bg-slate-200 hover:bg-slate-600 text-gray-600 hover:text-gray-100"
+                            @click="handleDeleteAll"
+                    >
+                        删除选中
+                    </el-button>
+                </el-row>
+                <el-table
+                        :data="UserList"
+                        @selection-change="handleSelectionChange"
+                        @sort-change="handleSortChange"
+                        :default-sort="UserSort"
+                        stripe
+                        class="w-full mt-8"
+                >
+                    <el-table-column type="selection" />
+                    <el-table-column label="主键" align="center">
+                        <template #default="scope">
+                            <span>{{ scope.row.id }}</span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="用户名" align="center">
+                        <template #default="scope">
+                            <span>{{ scope.row.name }}</span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="地址" align="center">
+                        <template #default="scope">
+                            <span>{{ scope.row.address }}</span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column
+                            label="出生日期"
+                            sortable="custom"
+                            align="center"
+                            prop="birthday"
+                    >
+                        <template #default="scope">
+                            <span>{{ scope.row.birthday }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column fixed="right" label="Operations" width="230">
+                        <template #default="scope">
+                            <el-button
+                                    class="bg-slate-300 hover:bg-slate-600 text-gray-600 hover:text-gray-100"
+                                    size="small"
+                                    :icon="InfoFilled"
+                                    @click="handleInfo(scope.$index, scope.row)"
+                            >
+                                详情
+                            </el-button>
+                            <el-button
+                                    class="bg-slate-300 hover:bg-slate-600 text-gray-600 hover:text-gray-100"
+                                    size="small"
+                                    :icon="Edit"
+                                    @click="clickEdit(scope.$index, scope.row)"
+                            >
+                                编辑
+                            </el-button>
+                            <el-button
+                                    type="text"
+                                    :icon="Delete"
+                                    class="hover:text-gray-700"
+                                    @click="handleDelete(scope.$index, scope.row)"
+                                    size="small"
+                            >删除</el-button
+                            >
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="flex justify-end">
+                    <el-pagination
+                            class="my-5 text-slate-600 hover:text-slate-900"
+                            v-model:currentPage="Pagination.currentPage"
+                            v-model:page-size="Pagination.pageSize"
+                            :small="Pagination.small"
+                            :disabled="Pagination.disabled"
+                            :background="Pagination.background"
+                            layout=" prev, pager, next"
+                            :total="Pagination.total"
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            @prev-click="handlePrevClick"
+                            @next-click="handleNextClick"
+                    />
+                </div>
+            </div>
+        </el-card>

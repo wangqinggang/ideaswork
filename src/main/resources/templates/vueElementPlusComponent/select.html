@@ -1,0 +1,19 @@
+        <el-form-item th:label="${lable}" th:prop="${propName}">
+            <el-select th:v-model="${fieldName}" th:placeholder="${placeholder}">
+                <el-option th:label="男" value="1"></el-option>
+                <el-option th:label="女" value="0"></el-option>
+            </el-select>
+        </el-form-item>
+
+
+        <el-form-item th:label="${lable}" th:prop="${propName}">
+            <el-select th:v-model="${fieldName}" th:placeholder="${placeholder}">
+                <el-option
+                        v-for="dict in dictionary"
+                        :label="dict.lable"
+                        :value="dict.value"
+                        :key="dict.id"
+                >
+                </el-option>
+            </el-select>
+        </el-form-item>

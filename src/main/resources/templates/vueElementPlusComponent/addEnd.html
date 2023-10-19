@@ -1,0 +1,19 @@
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="${entityName}AddVisable = false">取消</el-button>
+        <el-button
+                v-if="!${entityName}.id"
+                @click="${entityName}Add"
+                class="bg-slate-500 border-0 hover:bg-slate-700 text-gray-100 hover:text-gray-100"
+        >新增</el-button
+        >
+        <el-button
+                v-if="${entityName}.id"
+                @click="${entityName}Edit"
+                class="bg-slate-500 border-0 hover:bg-slate-700 text-gray-100 hover:text-gray-100"
+        >修改</el-button
+        >
+      </span>
+      </template>
+    </el-dialog>

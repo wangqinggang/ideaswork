@@ -1,0 +1,63 @@
+
+            <el-table-column label="操作" align="center" >
+                <template slot-scope="scope">
+                    <router-link :to="'/${entityName}/edit/'+scope.row.id">
+                        <el-button type="primary" size="small" icon="el-icon-edit">
+                            修改
+                        </el-button>
+                    </router-link>
+                </template>
+                &nbsp;
+                <template slot-scope="scope">
+                    <router-link :to="'/${entityName}/delete/'+scope.row.id">
+                        <el-button type="primary" size="small" icon="el-icon-delete">
+                            删除
+                        </el-button>
+                    </router-link>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <pagination v-show="total>0" :total="total" :page.sync="pagination.pageNum" :limit.sync="pagination.pageSize"
+                    @pagination="getList"/>
+    </div>
+</template>
+
+<script>
+    import { get${entityName}DataByCondition } from '@/api/{entityName}Service.js'
+    import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+    export default {
+        name: '${entityName}List',
+        components: {Pagination},
+        data() {
+            return {
+                list: null,// 查询的表单内容
+                total: 0,// 数据数量
+                listLoading: true,// 加载
+                ${entityName}Condition: null, // 实体的条件查询 DTO
+                pagination:{
+                    pageNum:1,
+                    pageSize:10,
+                }
+
+            }
+        },
+        created() {
+            this.getList()
+        },
+        methods: {
+            getList() {
+                this.listLoading = true
+                get${entityName}DataByCondition(this.${entityName}Condition,this.pageNum,this.pageSize).then(response => {
+                    this.list = response.data.content
+                    this.total = response.data.totalElements
+                    this.listLoading = false
+                })
+            }
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>

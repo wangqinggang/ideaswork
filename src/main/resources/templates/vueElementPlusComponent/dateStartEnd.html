@@ -1,0 +1,19 @@
+<el-form-item th:label="${lable}" th:prop="${propName}">
+  <el-col :span="9">
+    <el-date-picker
+            th:v-model="${fieldName}"
+            type="date"
+            placeholder="开始日期"
+            style="width: 100%"
+    ></el-date-picker>
+  </el-col>
+  <el-col class="line" :span="1">-</el-col>
+  <el-col :span="9">
+    <el-date-picker
+            th:v-model="${fieldName}"
+            type="date"
+            placeholder="结束日期"
+            style="width: 100%"
+    ></el-date-picker>
+  </el-col>
+</el-form-item>

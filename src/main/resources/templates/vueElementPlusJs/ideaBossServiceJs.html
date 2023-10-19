@@ -1,0 +1,66 @@
+import request from "@/utils/request.js";
+
+class ${entityName}Service {
+
+    // 获取所有${entityComment}数据
+    get${entityName}s() {
+        return request({
+            url: "/${entityNameUrl}",
+            method: "get",
+        });
+    }
+
+    // 根据 id 获取${entityComment}数据
+    get${entityName}ById(id) {
+        return request({
+            url: `/${entityNameUrl}/${id}`,
+            method: "get",
+        });
+    }
+
+    // 条件查询获取${entityComment}分页数据
+    get${entityName}ByCondition(condition, pageNum, pageSize) {
+        return request({
+            url: `/${entityNameUrl}/getPageList?page=${pageNum}&size=${pageSize}`,
+            method: "get",
+            params: condition,
+        });
+    }
+
+    // 条件查询获取用户表分页数据
+    get${entityName}ByConditionWithSort(condition, pageNum, pageSize, sort) {
+        return request({
+            url: `/${entityNameUrl}/getPageList?page=${pageNum}&size=${pageSize}&${sort}`,
+            method: "get",
+            params: condition,
+        });
+    }
+
+    // 新增${entityComment}数据
+    post${entityName}(object) {
+        return request({
+            url: "/${entityNameUrl}",
+            method: "post",
+            data: object,
+        });
+    }
+
+    // 修改${entityComment}数据
+    put${entityName}(id, object) {
+        return request({
+            url: `/${entityNameUrl}/${id}`,
+            method: "put",
+            data: object,
+        });
+    }
+
+    // 根据 id 删除${entityComment}数据
+    delete${entityName}ById(id) {
+        return request({
+            url: `/${entityNameUrl}/${id}`,
+            method: "delete",
+        });
+    }
+}
+
+export default new ${entityName}Service();
